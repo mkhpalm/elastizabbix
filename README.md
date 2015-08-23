@@ -1,5 +1,5 @@
 # elastizabbix
-Down and dirty elastic / elasticsearch monitoring zabbix plugin
+Down and dirty elastic / elasticsearch monitoring plugin for zabbix
 
 ## Features:
 
