@@ -8,6 +8,10 @@ Down and dirty elastic / elasticsearch monitoring plugin for zabbix
 - JSON-like dot notation item syntax for easy customization
 - Can monitor anything elastic exposes in the stats API
 
+## Requirements
+
+ - Python 2/3 on an elastic node with zabbix agent installed
+
 ## Installation
 
 This only needs to be setup on one of the elasticsearch nodes
