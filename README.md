@@ -26,9 +26,7 @@ This only needs to be setup on one of the elasticsearch nodes
 - Import the XML template
 - Add node to the newly imported template
 
-## License (MIT)
-
-The MIT License (MIT)
+## The MIT License (MIT)
 
 Copyright (c) 2015 Mike Palmer
 
