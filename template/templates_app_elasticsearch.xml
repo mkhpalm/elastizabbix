@@ -1285,7 +1285,7 @@
                     <snmp_oid/>
                     <key>elastizabbix[discover,indices]</key>
                     <delay>60</delay>
-                    <status>0</status>
+                    <status>1</status>
                     <allowed_hosts/>
                     <snmpv3_contextname/>
                     <snmpv3_securityname/>
