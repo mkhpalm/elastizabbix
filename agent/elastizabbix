@@ -2,7 +2,7 @@
 import os
 import sys
 import json
-import urllib
+import urllib2
 import time
 
 ttl = 60
@@ -20,7 +20,7 @@ def get_cache(api):
     jtime = os.path.exists(cache) and os.path.getmtime(cache) or 0
     if time.time() - jtime > ttl and not os.path.exists(lock):
         open(lock, 'a').close() 
-        urllib.urlretrieve(stats[api], cache)
+        with open(cache, 'w') as f: f.write(urllib2.urlopen(stats[api]).read())
         os.remove(lock)
     ltime = os.path.exists(lock) and os.path.getmtime(lock) or None
     if ltime and time.time() - ltime > 300:
