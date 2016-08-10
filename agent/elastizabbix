@@ -4,6 +4,7 @@ import sys
 import json
 import urllib2
 import time
+import errno
 
 ttl = 60
 
@@ -14,16 +15,28 @@ stats = {
     'health' : 'http://localhost:9200/_cluster/health'
 }
 
+def created_file(name):
+    try:
+        fd = os.open(name, os.O_WRONLY | os.O_CREAT | os.O_EXCL)
+        os.close(fd)
+        return True
+    except OSError, e:
+        if e.errno == errno.EEXIST:
+            return False
+        raise
+
+def is_older_then(name, ttl):
+    age = time.time() - os.path.getmtime(name)
+    return age > ttl
+
 def get_cache(api):
     cache = '/tmp/elastizabbix-{0}.json'.format(api)
     lock = '/tmp/elastizabbix-{0}.lock'.format(api)
-    jtime = os.path.exists(cache) and os.path.getmtime(cache) or 0
-    if time.time() - jtime > ttl and not os.path.exists(lock):
-        open(lock, 'a').close() 
+    should_update = (not os.path.exists(cache)) or is_older_then(cache, ttl)
+    if should_update and created_file(lock):
         with open(cache, 'w') as f: f.write(urllib2.urlopen(stats[api]).read())
         os.remove(lock)
-    ltime = os.path.exists(lock) and os.path.getmtime(lock) or None
-    if ltime and time.time() - ltime > 300:
+    if  os.path.exists(lock) and is_older_then(lock, 300):
         os.remove(lock)
     return json.load(open(cache))
 
