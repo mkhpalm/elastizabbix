@@ -23,7 +23,7 @@ This only needs to be setup on one of the elasticsearch nodes
 
 #### Zabbix Frontend
 
-- Import the XML template
+- Import the XML template (supports zabbix 2.4 and greater)
 - Add node to the newly imported template
 
 ## The MIT License (MIT)
