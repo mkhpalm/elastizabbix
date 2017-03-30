@@ -34,11 +34,22 @@ def get_cache(api):
     lock = '/tmp/elastizabbix-{0}.lock'.format(api)
     should_update = (not os.path.exists(cache)) or is_older_then(cache, ttl)
     if should_update and created_file(lock):
-        with open(cache, 'w') as f: f.write(urllib2.urlopen(stats[api]).read())
-        os.remove(lock)
+        try:
+            d = urllib2.urlopen(stats[api]).read()
+            with open(cache, 'w') as f: f.write(d)
+        except Exception as e:
+            pass        
+        if os.path.exists(lock):
+            os.remove(lock)
     if  os.path.exists(lock) and is_older_then(lock, 300):
         os.remove(lock)
-    return json.load(open(cache))
+    ret_data = {}
+    try:
+        with open(cache)  as data_file:    
+            ret_data = json.load(data_file)        
+    except Exception as e:
+        ret_data = json.loads(urllib2.urlopen(stats[api]).read())
+    return ret_data   
 
 def get_stat(api, stat):
     d = get_cache(api)
@@ -72,6 +83,7 @@ if __name__ == '__main__':
             print discover_nodes()
         if stat == 'indices':
             print discover_indices()
+
     else:
         stat = get_stat(api, stat)
         if isinstance(stat, dict):
