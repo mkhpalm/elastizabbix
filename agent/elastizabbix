@@ -7,6 +7,8 @@ import time
 import errno
 
 ttl = 60
+username=""
+password=""
 
 stats = {
     'cluster': 'http://localhost:9200/_cluster/stats',
@@ -35,7 +37,11 @@ def get_cache(api):
     should_update = (not os.path.exists(cache)) or is_older_then(cache, ttl)
     if should_update and created_file(lock):
         try:
-            d = urllib2.urlopen(stats[api]).read()
+            request = urllib2.Request(stats[api])
+            if username and password:
+                base64string = base64.b64encode('%s:%s' % (username, password))
+                request.add_header("Authorization", "Basic %s" % base64string)
+            d = urllib2.urlopen(request).read()
             with open(cache, 'w') as f: f.write(d)
         except Exception as e:
             pass        
